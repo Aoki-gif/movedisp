@@ -1,0 +1,25 @@
+.Container {
+  align-items: center;
+  border: solid;
+}
+
+.Contents {
+  display: flex;
+  align-items: center;
+}
+
+.label {
+  align-items: center;
+}
+
+.checkbox {
+  align-items: center;
+}
+
+.datetime {
+  align-items: center;
+}
+
+.input_number {
+  align-items: center;
+}

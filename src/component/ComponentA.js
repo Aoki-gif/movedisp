@@ -16,8 +16,6 @@ const ComponentA = () => {
       });
 
       console.log("これはファイルです", file);
-      console.log("ファイル名：", file.name);
-      console.log("ファイル名：", file.path);
     } else if (entry.isDirectory) {
       console.log("これはディレクトリです");
     }
