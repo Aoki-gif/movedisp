@@ -11,11 +11,60 @@ export default function ComponentD() {
   const { width, height } = useWindowSize();
   const jsonData = JSON.parse(location.state);
 
-  console.log(jsonData);
+  //console.log(jsonData);
   //初期値
   const metaData = jsonData[0];
 
-  console.log(metaData);
+  //表示アイテムの作成
+  const dispItems = () => {
+    console.log(111111);
+    var div = document.createElement("div");
+    //始祖の子分ループさせる
+    for (let i = 0; i < jsonData[1].child.length; i++) {
+      //始祖の子の名前と一致するObject_idを探す
+      for (let j = 0; j < jsonData.length; j++) {
+        let childname = "";
+        console.log(j);
+        //始祖の孫の名前と一致するObject_idを探す
+        //基本、始祖の子以降に孫が定義されているため、ループ開始はJの値から
+        for (let k = j; k < jsonData.length; k++) {
+          //child名=object_idが一致
+          if (jsonData[k].object_id === childname) {
+            let babyElemnt = document.createElement("div");
+            let inputElemnt = document.createElement("input");
+
+            //孫のStyle作成
+            let babyStyleInf = {
+              x: (jsonData[k].x / metaData.width) * width,
+              y: (jsonData[k].y / metaData.height) * height,
+              height: (jsonData[k].height / metaData.height) * height,
+              width: (jsonData[k].width / metaData.width) * width,
+              position: "absolute",
+              top: (jsonData[k].y / metaData.height) * height,
+              left: (jsonData[k].x / metaData.width) * width
+            };
+
+            //Style設定
+            babyElemnt.style = babyStyleInf;
+
+            //各要素の追加
+            if (jsonData[k].contents_type !== "label") {
+              inputElemnt.setAttribute("type", jsonData[k].contents_type);
+            }
+
+            if (jsonData[k].contents_type === "checkbox") {
+              inputElemnt.checked = false;
+            } else if (jsonData[k].contents_type === "datetime") {
+            } else if (jsonData[k].contents_type === "input_number") {
+            } else if (jsonData[k].contents_type === "label") {
+              babyElemnt.textContent = jsonData[k].text;
+            }
+          }
+        }
+      }
+    }
+    return <div>aaaa</div>;
+  };
 
   return jsonData.map((object, index) => {
     let ItemsStyleInf;
@@ -37,7 +86,20 @@ export default function ComponentD() {
       };
     }
     return (
-      <div style={ItemsStyleInf} class={object.object_type}>
+      <div
+        style={ItemsStyleInf}
+        class={object.contents_type ? object.contents_type : object.object_type}
+      >
+        {object.contents_type ? (
+          object.contents_type ===
+          "label" ? undefined : object.contents_type === "datetime" ? (
+            <input type="date"></input>
+          ) : object.contents_type === "input_number" ? (
+            <input type="number"></input>
+          ) : (
+            <input type={object.contents_type}></input>
+          )
+        ) : undefined}
         {object.text ? <p>{object.text}</p> : undefined}
       </div>
     );
