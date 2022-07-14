@@ -5,16 +5,15 @@ import ComponentA2 from "./component/ComponentA2";
 import ComponentB from "./component/ComponentB";
 import ComponentC from "./component/ComponentC";
 import ComponentD from "./component/ComponentD";
+import ComponentF from "./component/ComponentF";
 
 const Routers = () => {
   return (
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<ComponentC />} />
-        <Route path="/" element={<ComponentA />} />
-        <Route path="/" element={<ComponentA2 />} />
-        <Route path="/componentb" element={<ComponentB />} />
         <Route path="/componentd" element={<ComponentD />} />
+        <Route path="/componentf" element={<ComponentF />} />
       </Routes>
     </BrowserRouter>
   );

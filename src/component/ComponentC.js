@@ -10,15 +10,17 @@ export default function ComponentC() {
   const [sheetName, setSheetName] = useState("");
   const [jsondata, setJsonData] = useState("");
 
+  const [ContentsData, setContents] = useState("");
+
   //選択ファイル保持および変数更新
   function onChange(event) {
     setSelectedFile(event.target.files[0]);
-    console.log(selectedFile);
+    //console.log(selectedFile);
   }
 
   useEffect(() => {
     console.log("useEffect");
-    console.log(selectedFile);
+    //console.log(selectedFile);
 
     if (selectedFile !== "") {
       //FileReaderのインスタンスを作成する
@@ -26,21 +28,42 @@ export default function ComponentC() {
       //読み込んだファイルの中身を取得する
       reader.readAsText(selectedFile);
       reader.addEventListener("load", function () {
-        console.log(JSON.parse(reader.result));
+        //console.log(JSON.parse(reader.result));
         //ファイルの中身を設定
         setJsonData(reader.result);
       });
     }
-  });
+  }, [selectedFile]);
 
   //表示ボタン押下時処理
   //画面遷移および取得ファイルの受け渡し
   function onSubmit() {
-    console.log(jsondata);
-
     //画面遷移
     navigate("/componentd", { state: jsondata });
   }
+
+  function onShow() {
+    const test = JSON.parse(jsondata);
+    const result = test.filter((data) => {
+      return data.contents_type != null;
+    });
+    const result1 = test.filter((data) => {
+      return data.parent?.length > 0;
+    });
+    setContents(result);
+    setContents(result1);
+  }
+
+  function onTest() {
+    //画面遷移
+    navigate("/componentf", { state: jsondata });
+  }
+
+  useEffect(() => {
+    console.log("useEffect - ContensData");
+    //console.log(selectedFile);
+    console.log(ContentsData);
+  }, [ContentsData]);
 
   //画面作成処理
   return (
@@ -55,6 +78,12 @@ export default function ComponentC() {
         ></input>
         <button style={{ width: "40%", height: "40%" }} onClick={onSubmit}>
           表示
+        </button>
+        <button style={{ width: "40%", height: "40%" }} onClick={onShow}>
+          確認
+        </button>
+        <button style={{ width: "40%", height: "40%" }} onClick={onTest}>
+          Test
         </button>
       </div>
     </div>
