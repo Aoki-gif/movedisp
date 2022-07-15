@@ -1,24 +1,37 @@
 import React, { useState, useEffect } from "react";
-import Child from "../component/Child";
+import { useWindowSize } from "react-use";
+import ELcheckBox from "../element/ELcheckBox";
+import ELNumber from "../element/ElNumber";
+import ELDate from "../element/ElDate";
 
-export default function Pearent({
-  PearentsData,
-  ContentsData,
-  height,
-  width,
-  widthSize,
-  heightSize
-}) {
+export default function Pearent({ PearentsData, ContentsData, MetaData }) {
   console.log("親要素作成");
+  //画面サイズ取得(使用画面)
+  const { width, height } = useWindowSize();
   //変数定義
   const [state, setState] = useState();
-  const [styleInf, setstyleInf] = useState();
+  const [requiredFlg, setRequired] = useState();
   const [backColor, setbackColor] = useState("#FFFFFF");
+  const [styleInf, setstyleInf] = useState({
+    x: PearentsData.x,
+    y: PearentsData.y,
+    height: PearentsData.height,
+    width: PearentsData.width,
+    position: "absolute",
+    top: PearentsData.y,
+    left: PearentsData.x,
+    background: backColor
+  });
 
   //親と子コンポーネントでやり取りする値
+  //背景色変更
   const changeState = (isState) => {
     setState(isState);
-    console.log("親要素-ステータス変更");
+  };
+
+  //必須or不必要　設定
+  const changeRequired = (isRequiredFlg) => {
+    setRequired(isRequiredFlg);
   };
 
   //親要素の背景色を変更する。
@@ -31,6 +44,7 @@ export default function Pearent({
 
     //条件により変化する（True or False)
     if (state !== null) {
+      console.log("状態" + state);
       state ? (changeColor = green) : (changeColor = red);
     } else {
       //白
@@ -39,38 +53,77 @@ export default function Pearent({
 
     setbackColor(changeColor);
     console.log("親要素-背景色変更：" + changeColor);
-    console.log(PearentsData);
-  }, [state]);
 
-  //背景色が変更になった場合
-  useEffect(() => {
-    //親のStyle作成
-    const StyleInf = {
-      x: (PearentsData.x / widthSize) * width,
-      y: (PearentsData.y / heightSize) * height,
-      height: (PearentsData.height / heightSize) * height,
-      width: (PearentsData.width / widthSize) * width,
+    console.log("親要素-Sytle作成");
+    const newStyle = {
+      x: PearentsData.x,
+      y: PearentsData.y,
+      height: PearentsData.height,
+      width: PearentsData.width,
       position: "absolute",
-      top: (PearentsData.y / heightSize) * height,
-      left: (PearentsData.x / widthSize) * width,
+      top: PearentsData.y,
+      left: PearentsData.x,
       background: backColor
     };
-    setstyleInf(StyleInf);
-    console.log("親要素-Sytle作成");
-    console.log(styleInf);
+    setstyleInf(newStyle);
+  }, [state]);
+
+  useEffect(() => {
+    console.log("背景色変更後のUseEffect");
     console.log(PearentsData);
-  }, [backColor]);
+    console.log(styleInf);
+  }, [styleInf]);
 
   return (
     <div id={PearentsData.object_id} style={styleInf}>
-      <Child
-        chsngeStateChild={changeState}
-        childrenData={ContentsData}
-        height={height}
-        width={width}
-        widthSize={widthSize}
-        heightSize={heightSize}
-      />
+      {ContentsData.map((children) => {
+        //子のStyle作成
+        const childStyleInf = {
+          x: children.x,
+          y: children.y,
+          height: children.height,
+          width: children.width,
+          position: "absolute",
+          top: children.y,
+          left: children.x
+        };
+        //Contentsの種別に応じてComponent変更
+        if (children.contents_type === "checkbox") {
+          return (
+            <ELcheckBox
+              chsngeState={changeState}
+              required={children.required}
+              divStyle={childStyleInf}
+            ></ELcheckBox>
+          );
+        } else if (children.contents_type === "input_number") {
+          console.log(children);
+          console.log("MIN:" + children.min + "  MAX:" + children.max);
+          return (
+            <ELNumber
+              chsngeNumber={changeState}
+              required={children.required}
+              divStyle={childStyleInf}
+              Min={children.min}
+              Max={children.max}
+            ></ELNumber>
+          );
+        } else if (children.contents_type === "datetime") {
+          console.log("children:" + children);
+          console.log("PAST:" + children.past_dates);
+          return (
+            <ELDate
+              required={children.required}
+              divStyle={childStyleInf}
+              PastFlg={children.past_dates}
+            ></ELDate>
+          );
+        } else if (children.contents_type === "label") {
+          return <div style={childStyleInf}>{children.text}</div>;
+        } else {
+          return <div>定義なしContents_type{children.contents_type}</div>;
+        }
+      })}
     </div>
   );
 }
