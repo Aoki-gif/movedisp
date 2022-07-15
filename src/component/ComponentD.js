@@ -17,7 +17,23 @@ export default function ComponentD() {
 
   //表示アイテムの作成
   const dispItems = () => {
-    console.log(111111);
+    //メインスタイル
+    const MainStyleInf = {
+      height: metaData.height,
+      width: metaData.width,
+      position: "relative"
+    };
+    //親
+    const PearentStyle = {
+      x: (jsonData[1].x / metaData.width) * width,
+      y: (jsonData[1].y / metaData.height) * height,
+      height: (jsonData[1].height / metaData.height) * height,
+      width: (jsonData[1].width / metaData.width) * width,
+      position: "absolute",
+      top: (jsonData[1].y / metaData.height) * height,
+      left: (jsonData[1].x / metaData.width) * width
+    };
+
     var div = document.createElement("div");
     //始祖の子分ループさせる
     for (let i = 0; i < jsonData[1].child.length; i++) {
@@ -63,7 +79,17 @@ export default function ComponentD() {
         }
       }
     }
+    const Pearent = React.createElement("div", { style: MainStyleInf });
     return <div>aaaa</div>;
+  };
+
+  //　InputがNumber　の値が変更された時
+  const onChangeNumber = (event) => {
+    let inputValue = event.target.value;
+    console.log(inputValue);
+    console.log(event);
+    const min = 0;
+    const max = 5;
   };
 
   return jsonData.map((object, index) => {
@@ -89,13 +115,14 @@ export default function ComponentD() {
       <div
         style={ItemsStyleInf}
         class={object.contents_type ? object.contents_type : object.object_type}
+        id={object.object_id}
       >
         {object.contents_type ? (
           object.contents_type ===
           "label" ? undefined : object.contents_type === "datetime" ? (
             <input type="date"></input>
           ) : object.contents_type === "input_number" ? (
-            <input type="number"></input>
+            <input type="number" onChange={onChangeNumber}></input>
           ) : (
             <input type={object.contents_type}></input>
           )
