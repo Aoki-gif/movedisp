@@ -1,6 +1,6 @@
 .Container {
   align-items: center;
-  background-color: greenyellow;
+  border: solid;
 }
 
 .Contents {

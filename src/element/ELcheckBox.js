@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 
-export default function ElCheckBox({ chsngeState, required, divStyle }) {
+export default function ElCheckBox({ chsngeState, ChkRequired, divStyle }) {
   console.log("チェックボックスコンポーネント作成");
   const [check, setcheck] = useState();
   //とりあえずisStateにはtrueを格納
@@ -8,13 +8,13 @@ export default function ElCheckBox({ chsngeState, required, divStyle }) {
 
   //チェック状態　変更合った場合
   useEffect(() => {
-    if (required) {
+    if (ChkRequired) {
       //必須の場合
-      check ? (isState = true) : (isState = false);
+      check ? (isState = false) : (isState = true);
       console.log("必要の場合:" + isState);
     } else {
       //必須ではない
-      check ? (isState = true) : (isState = null);
+      check ? (isState = null) : (isState = true);
       console.log("不必要の場合:" + isState);
     }
     //親から貰ったを実行
@@ -28,7 +28,11 @@ export default function ElCheckBox({ chsngeState, required, divStyle }) {
 
   return (
     <div style={divStyle}>
-      <input type="checkbox" onChange={onChangeBox}></input>
+      <input
+        type="checkbox"
+        onChange={onChangeBox}
+        required={ChkRequired}
+      ></input>
     </div>
   );
 }

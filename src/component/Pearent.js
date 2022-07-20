@@ -3,6 +3,7 @@ import { useWindowSize } from "react-use";
 import ELcheckBox from "../element/ELcheckBox";
 import ELNumber from "../element/ElNumber";
 import ELDate from "../element/ElDate";
+import "../style/ComponentD.css";
 
 export default function Pearent({ PearentsData, ContentsData, MetaData }) {
   console.log("親要素作成");
@@ -20,7 +21,7 @@ export default function Pearent({ PearentsData, ContentsData, MetaData }) {
     position: "absolute",
     top: PearentsData.y,
     left: PearentsData.x,
-    background: backColor
+    background: "#FFFFFF"
   });
 
   //親と子コンポーネントでやり取りする値
@@ -54,13 +55,12 @@ export default function Pearent({ PearentsData, ContentsData, MetaData }) {
     setbackColor(changeColor);
     console.log("親要素-背景色変更：" + changeColor);
 
-    console.log("親要素-Sytle作成");
     const newStyle = {
       x: PearentsData.x,
       y: PearentsData.y,
       height: PearentsData.height,
       width: PearentsData.width,
-      position: "absolute",
+      position: "fixed",
       top: PearentsData.y,
       left: PearentsData.x,
       background: backColor
@@ -75,7 +75,15 @@ export default function Pearent({ PearentsData, ContentsData, MetaData }) {
   }, [styleInf]);
 
   return (
-    <div id={PearentsData.object_id} style={styleInf}>
+    <div
+      id={PearentsData.object_id}
+      style={styleInf}
+      class={
+        PearentsData.object_type === "Container"
+          ? PearentsData.object_type
+          : null
+      }
+    >
       {ContentsData.map((children) => {
         //子のStyle作成
         const childStyleInf = {
@@ -83,7 +91,7 @@ export default function Pearent({ PearentsData, ContentsData, MetaData }) {
           y: children.y,
           height: children.height,
           width: children.width,
-          position: "absolute",
+          position: "fixed",
           top: children.y,
           left: children.x
         };
@@ -97,7 +105,6 @@ export default function Pearent({ PearentsData, ContentsData, MetaData }) {
             ></ELcheckBox>
           );
         } else if (children.contents_type === "input_number") {
-          console.log(children);
           console.log("MIN:" + children.min + "  MAX:" + children.max);
           return (
             <ELNumber
